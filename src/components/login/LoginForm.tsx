@@ -11,7 +11,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/Form";
 
-const phoneRegex = new RegExp(/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/);
+const phoneRegex = new RegExp(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/);
 
 const formSchema = z.object({
     mobile: z.string({ required_error: "Fill your phone number please!" }).regex(phoneRegex, "Invalid phone number!"),
