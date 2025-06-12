@@ -14,10 +14,10 @@ export default async function main(req: NextRequest, res: NextResponse, routes: 
     if (!runTheGuard) return [allowUserToViewPage, res];
 
     // get the cookie
-    const authToken = req.cookies.get("AuthToken")?.value || "";
+    const user = req.cookies.get("user")?.value || "";
 
-    // if the token does not exist user is not logged in then dont allow user
-    if (!authToken) return [!allowUserToViewPage, res];
+    // if the user does not exist user is not logged in then dont allow user
+    if (!user) return [!allowUserToViewPage, res];
 
     return [allowUserToViewPage, res];
 }
