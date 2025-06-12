@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
         <html lang="en">
-            <body className={inter.className}>
+            <body className="dark">
                 <Provider>
                     <main className="flex flex-col items-center justify-center gap-2 h-screen">{children}</main>
                 </Provider>
