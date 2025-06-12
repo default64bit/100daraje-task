@@ -1,88 +1,15 @@
-"use client";
-import { Button } from "@/components/ui/Button";
-import { Card, CardContent } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
-import { TbLoader } from "react-icons/tb";
-import { useToast } from "@/hooks/UseToast";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/Form";
+import LoginForm from "@/components/login/LoginForm";
+import { cookies } from "next/headers";
 
-const formSchema = z.object({
-    mobile: z.string({ required_error: "add your name here please" }),
-});
-
-const Login = () => {
-    const { toast } = useToast();
-    const router = useRouter();
-
-    const [loading, setLoading] = useState(false);
-
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            mobile: "",
-        },
-    });
-
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        if (loading) return;
-        setLoading(true);
-
-        const data = {
-            mobile: values.mobile,
-        };
-
-        const R = await fetch(`/api/products/reviews`, {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify(data),
-        })
-            .then((response) => response)
-            .catch((error) => new Response(error, { status: 500, statusText: "Internal Error" }));
-        setLoading(false);
-
-        if (R.status >= 400) {
-            const error = await R.text();
-            toast({ title: "Whoops...", description: error ?? "Unknow Error", variant: "destructive" });
-            return;
-        }
-
-        router.replace("/dashboard");
+const LoginPage = async () => {
+    // server action for saving user data in a secure cookie
+    const saveUserData = async (r: string) => {
+        "use server";
+        const cookiesStored = await cookies();
+        cookiesStored.set("user", r, { httpOnly: true });
     };
 
-    return (
-        <Card className="w-full max-w-96">
-            <CardContent className="flex flex-col items-center gap-6 w-full p-8">
-                <h1 className="text-3xl font-bold">Welcome</h1>
-                <p className="text-sm opacity-75 -mb-2 text-pretty">Enter your phone number to login or register</p>
-                <Form {...form}>
-                    <form className="flex flex-col items-center gap-4 w-full" key="enter" onSubmit={form.handleSubmit(onSubmit)}>
-                        <FormField
-                            control={form.control}
-                            name="mobile"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Your Name</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Phone Number" {...field} required />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <Button className="w-full py-6" type="submit" disabled={loading}>
-                            {loading ? <TbLoader className="animate-spin" size="1.25rem" /> : "Continue"}
-                        </Button>
-                    </form>
-                </Form>
-                <small className="text-xs opacity-50 text-center">By signing up you accept our Terms Of Service and Privacy Policy</small>
-            </CardContent>
-        </Card>
-    );
+    return <LoginForm saveUserData={saveUserData} />;
 };
 
-export default Login;
+export default LoginPage;
