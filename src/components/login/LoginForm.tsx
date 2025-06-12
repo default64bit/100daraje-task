@@ -12,8 +12,10 @@ import { useRouter } from "next/navigation";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/Form";
 import { cookies } from "next/headers";
 
+const phoneRegex = new RegExp(/^([+]?[\s0-9]+)?(\d{3}|[(]?[0-9]+[)])?([-]?[\s]?[0-9])+$/);
+
 const formSchema = z.object({
-    mobile: z.string({ required_error: "add your name here please" }),
+    mobile: z.string({ required_error: "Fill your phone number please!" }).regex(phoneRegex, "Invalid phone number!"),
 });
 
 const LoginForm = ({ saveUserData }: { saveUserData: (r: string) => Promise<void> }) => {
